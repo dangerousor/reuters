@@ -49,6 +49,7 @@ class Spider:
         start = True
         end = True
         while start or end:
+            print(i)
             url = 'https://cn.reuters.com/news/archive/chinaNews?view=page&page=%s&pageSize=10' % i
             html = self.get_html(url)
             if html.status_code != 200:
