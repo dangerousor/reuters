@@ -31,14 +31,21 @@ class Spider:
         title = article.xpath('./div[2]/a/h3/text()')[0].encode().decode().replace('\n', '').replace('\t', '')
         # print(title.replace('\n', '').replace('\t', ''))
         html = self.get_html(url)
-        content = etree.HTML(html.content.decode()).xpath('//*[@class="StandardArticleBody_body"]')[0].xpath('string(.)').encode()
+        contents = etree.HTML(html.content.decode()).xpath('//*[@class="StandardArticleBody_body"]/p')
+        content = []
+        for each in contents:
+            content.append(each.xpath('string(.)').encode())
+        if content:
+            temp = content[0].split('-'.encode(), 1)
+            if temp[0].strip().startswith('路透'.encode()):
+                content[0] = temp[1].strip()
         self.make_path(os.path.join('data', t))
         with open(os.path.join('data', t, title + '.txt'), 'wb+') as f:
-            f.write(content)
+            f.write('\n'.encode().join(content))
             f.write('\n'.encode())
 
     def run(self):
-        i = 65
+        i = 22
         start = True
         end = True
         while start or end:
@@ -52,7 +59,7 @@ class Spider:
             for each in res:
                 t = self.get_time(each).replace(' ', '')
                 if start:
-                    if t == '2018年12月31日':
+                    if t == '2019年2月28日':
                         start = False
                     else:
                         continue
