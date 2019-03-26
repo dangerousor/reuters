@@ -37,7 +37,7 @@ class Spider:
             content.append(each.xpath('string(.)').encode())
         if content:
             temp = content[0].split('-'.encode(), 1)
-            if temp[0].strip().startswith('路透'.encode()):
+            if len(temp) == 2 and temp[0].strip().startswith('路透'.encode()):
                 content[0] = temp[1].strip()
         self.make_path(os.path.join('data', t))
         with open(os.path.join('data', t, title + '.txt'), 'wb+') as f:
