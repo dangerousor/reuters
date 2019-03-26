@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
+import re
+
 from lxml import etree
 import requests
 import os
@@ -26,9 +28,16 @@ class Spider:
             return
         os.mkdir(p)
 
+    @staticmethod
+    def validate_title(title):
+        rstr = r"[\/\\\:\*\?\"\<\>\|]"  # '/ \ : * ? " < > |'
+        new_title = re.sub(rstr, "_", title)  # 替换为下划线
+        return new_title
+
     def save(self, t, article):
         url = 'https://cn.reuters.com' + article.xpath('./div[2]/a/@href')[0]
         title = article.xpath('./div[2]/a/h3/text()')[0].encode().decode().replace('\n', '').replace('\t', '')
+        title = self.validate_title(title)
         # print(title.replace('\n', '').replace('\t', ''))
         html = self.get_html(url)
         contents = etree.HTML(html.content.decode()).xpath('//*[@class="StandardArticleBody_body"]/p')
